@@ -1,0 +1,21 @@
+{
+  "name": "envkey",
+  "version": "0.1.0",
+  "description": "Envkey secures and simplifies app secrets and config by storing it in an encrypted vault and granting access to developers and servers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "configuration",
+    "environment variables",
+    "encryption",
+    "security"
+  ],
+  "author": "Dane Schneider <dane@envkey.com> (https://www.envkey.com)",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "ffi": "^2.2.0"
+  }
+}
