@@ -1,6 +1,6 @@
 {
   "name": "envkey",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Envkey secures and simplifies app secrets and config by storing it in an encrypted vault and granting access to developers and servers.",
   "main": "index.js",
   "scripts": {

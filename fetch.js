@@ -12,6 +12,5 @@ try {
   process.stdout.write(res)
   process.exit()
 } catch (e) {
-  process.stderr.write("Envkey invalid. Couldn't load vars.")
   process.exit(1)
 }

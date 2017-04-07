@@ -43,6 +43,14 @@ function getKey(opts){
   return process.env.ENVKEY
 }
 
+function keyError(){
+  "Envkey invalid. Couldn't load vars."
+}
+
+function throwKeyError(){
+  throw "Envkey invalid. Couldn't load vars."
+}
+
 function load(optsOrCb, maybeCb){
   var opts = typeof optsOrCb == "object" ? optsOrCb : {},
       cb = typeof optsOrCb == "function" ? optsOrCb : maybeCb,
@@ -107,17 +115,23 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
         cb(null, pickPermitted(json, opts))
       } else {
         child.stderr.setEncoding("utf-8")
-        cb(child.stderr.read())
+        cb(keyError())
       }
     })
   } else {
     var res = spawnSync("node", spawnArgs)
 
     if (res.status === 0){
-      var json = JSON.parse(res.stdout)
-      return pickPermitted(json, opts)
+      try {
+        var json = JSON.parse(res.stdout)
+        if(!json || typeof json == "string")throwKeyError()
+        return pickPermitted(json, opts)
+      } catch (e){
+        throwKeyError()
+      }
+
     } else {
-      throw res.stderr
+      throwKeyError()
     }
   }
 }
