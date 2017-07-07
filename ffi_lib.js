@@ -7,7 +7,6 @@ module.exports = {
         arch = process.arch,
         isWin = platform == "win32",
         isUnix = !isWin,
-
         platformParts,
         lib
 
@@ -19,14 +18,15 @@ module.exports = {
       if (arch == "x64"){
         platformParts = ["linux-amd64", "linux-arm64"]
       } else if (arch == "ia32"){
-        platformParts = ["linux-386"] } else {
-        platformParts = ["linux-arm64", "linux-arm-7", "linux-arm-6", "linux-arm-5"]
+        platformParts = ["linux-386"]
+      } else {
+        platformParts = ["linux-amd64", "linux-arm64", "linux-arm-7", "linux-arm-6", "linux-arm-5"]
       }
     }
 
     for (var i = 0; i < platformParts.length; i++) {
       var part = platformParts[i],
-          libPath = path.join(process.cwd(), "node_modules", "envkey", "ext", ["envkey", part].join("-"))
+          libPath = path.join(__dirname, "ext", ["envkey", part].join("-"))
 
       try {
         lib = ffi.Library(libPath, {
