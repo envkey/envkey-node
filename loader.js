@@ -102,7 +102,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
     return {}
   }
 
-  var filePath = path.join(process.cwd(), "node_modules", "envkey", "fetch.js"),
+  var filePath = path.join(__dirname, "fetch.js"),
       spawnArgs = [filePath, "--key", key]
 
   if (cb){
@@ -124,13 +124,17 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
     if (res.status === 0){
       try {
         var json = JSON.parse(res.stdout)
+        console.log("json: ", json)
         if(!json || typeof json == "string")throwKeyError()
         return pickPermitted(json, opts)
       } catch (e){
+        console.log("error: ", e)
         throwKeyError()
       }
 
     } else {
+      console.log("error status")
+      console.log(res.stderr.toString())
       throwKeyError()
     }
   }

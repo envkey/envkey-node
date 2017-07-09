@@ -12,5 +12,6 @@ try {
   process.stdout.write(res)
   process.exit()
 } catch (e) {
+  process.stderr.write(e)
   process.exit(1)
 }

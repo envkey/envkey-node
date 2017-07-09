@@ -17,7 +17,7 @@ module.exports = {
       platformParts = arch == "x64" ? ["darwin-10.6-amd64"] : ["darwin-10.6-386"]
     } else {
       if (arch == "x64"){
-        platformParts = ["linux-amd64", "linux-arm64", "musl"]
+        platformParts = ["musl"]
       } else if (arch == "ia32"){
         platformParts = ["linux-386"]
       } else {
@@ -30,13 +30,11 @@ module.exports = {
           libPath = path.join(__dirname, "ext", ["envkey", part].join("-"))
 
       try {
-        console.log(libPath)
         lib = ffi.Library(libPath, {
           EnvJson: ['string', ['string']]
         })
         break
       } catch (e) {
-        console.log(e)
         continue
       }
     }
