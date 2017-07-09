@@ -17,7 +17,7 @@ module.exports = {
       platformParts = arch == "x64" ? ["darwin-10.6-amd64"] : ["darwin-10.6-386"]
     } else {
       if (arch == "x64"){
-        platformParts = ["musl"]
+        platformParts = ["linux-amd64", "linux-arm64", "alpine"]
       } else if (arch == "ia32"){
         platformParts = ["linux-386"]
       } else {
@@ -30,16 +30,21 @@ module.exports = {
           libPath = path.join(__dirname, "ext", ["envkey", part].join("-"))
 
       try {
+        console.log(libPath)
         lib = ffi.Library(libPath, {
           EnvJson: ['string', ['string']]
         })
+        console.log("lib loaded")
         break
       } catch (e) {
+        console.log("error loading lib")
+        console.log(e)
         continue
       }
     }
 
     if(!lib){
+      console.log("no lib")
       throw "There was a problem loading Envkey on your platform"
     }
 

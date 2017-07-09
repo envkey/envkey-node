@@ -119,7 +119,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
       }
     })
   } else {
-    var res = spawnSync("node", spawnArgs)
+    var res = spawnSync("node", spawnArgs, {stdio:[0,1,2]})
 
     if (res.status === 0){
       try {
@@ -134,7 +134,6 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
 
     } else {
       console.log("error status")
-      console.log(res.stderr.toString())
       throwKeyError()
     }
   }

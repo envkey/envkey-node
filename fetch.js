@@ -8,10 +8,13 @@ var commandLineArgs = require('command-line-args'),
 if (!key)process.exit()
 
 try {
+  console.log("lib.EnvJson", key)
   var res = lib.EnvJson(key)
+  console.log(res)
   process.stdout.write(res)
   process.exit()
 } catch (e) {
-  process.stderr.write(e)
+  console.log("fetch error")
+  console.log(e)
   process.exit(1)
 }
