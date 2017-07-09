@@ -16,11 +16,11 @@ module.exports = {
       platformParts = arch == "x64" ? ["darwin-10.6-amd64"] : ["darwin-10.6-386"]
     } else {
       if (arch == "x64"){
-        platformParts = ["linux-amd64", "linux-arm64"]
+        platformParts = ["linux-amd64", "linux-arm64", "envkey-musl"]
       } else if (arch == "ia32"){
         platformParts = ["linux-386"]
       } else {
-        platformParts = ["linux-amd64", "linux-arm64", "linux-arm-7", "linux-arm-6", "linux-arm-5"]
+        platformParts = ["linux-amd64", "linux-arm64", "envkey-musl", "linux-arm-7", "linux-arm-6", "linux-arm-5"]
       }
     }
 

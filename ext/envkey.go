@@ -12,30 +12,49 @@ import (
   "golang.org/x/crypto/openpgp/armor"
 )
 
-const urlBase = "https://env-service.herokuapp.com/"
+const defaultHost = "env-service.herokuapp.com"
 
 type EnvResponse struct {
     Env string `json:"env"`
     EncryptedPrivkey string `json:"encrypted_privkey"`
+    InheritanceOverrides string `json:"inheritance_overrides"`
 }
 
 //export EnvJson
 func EnvJson(envkey *C.char) *C.char {
   split := strings.Split(C.GoString(envkey), "-")
-  envkeyParam, pw := split[0], split[1]
-  envResponse := new(EnvResponse)
-  var err error
-  err = getJson(urlBase + envkeyParam, envResponse)
-  if (err != nil){
-    return C.CString("")
-  }
-  var decrypted string
-  decrypted, err = decrypt(envResponse.Env, envResponse.EncryptedPrivkey, pw)
-  if (err != nil){
-    return C.CString("")
+  var envkeyParam, pw, envkeyHost string
+  if (len(split) == 3){
+    envkeyParam, pw, envkeyHost = split[0], split[1], split[2]
+  } else {
+    envkeyParam, pw = split[0], split[1]
+    envkeyHost = ""
   }
 
-  return C.CString(decrypted)
+  envResponse := new(EnvResponse)
+  var err error
+  err = getJson(getJsonUrl(envkeyHost, envkeyParam), envResponse)
+  if (err != nil){
+    return C.CString("")
+  }
+  return C.CString(getDecryptedEnvJson(envResponse, pw))
+}
+
+func getJsonUrl(envkeyHost string, envkeyParam string) string {
+  var host, protocol string
+  if (envkeyHost == ""){
+    host = defaultHost
+  } else {
+    host = envkeyHost
+  }
+
+  if (strings.Contains(host, "localhost")){
+    protocol = "http://"
+  } else {
+    protocol = "https://"
+  }
+
+  return protocol + host + "/" + envkeyParam
 }
 
 func getJson(url string, target interface{}) error {
@@ -47,6 +66,41 @@ func getJson(url string, target interface{}) error {
   defer r.Body.Close()
 
   return json.NewDecoder(r.Body).Decode(target)
+}
+
+func getDecryptedEnvJson(envResponse *EnvResponse, pw string) string {
+  var decryptedEnvString string
+  var err error
+  decryptedEnvString, err = decrypt(envResponse.Env, envResponse.EncryptedPrivkey, pw)
+  if (err != nil){
+    return ""
+  }
+
+  if (envResponse.InheritanceOverrides != ""){
+    var decryptedInheritanceString string
+    decryptedInheritanceString, err = decrypt(envResponse.InheritanceOverrides, envResponse.EncryptedPrivkey, pw)
+    if (err != nil){
+      return decryptedEnvString
+    }
+
+    var envMap, inheritanceMap map[string]interface{}
+    json.Unmarshal([]byte(decryptedEnvString), &envMap)
+    json.Unmarshal([]byte(decryptedInheritanceString), &inheritanceMap)
+
+    for k, v := range inheritanceMap {
+      envMap[k] = v
+    }
+
+    envJson, err := json.Marshal(envMap)
+    if (err != nil){
+      return decryptedEnvString
+    }
+
+    return string(envJson)
+
+  } else {
+    return decryptedEnvString
+  }
 }
 
 func decrypt(cipher, privkey, pw string) (string, error) {
