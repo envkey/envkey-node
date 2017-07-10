@@ -1,6 +1,6 @@
 {
   "name": "envkey",
-  "version": "0.2.2-beta-31",
+  "version": "0.3.0",
   "description": "Envkey secures and simplifies app secrets and config by storing it in an encrypted vault and granting access to developers and servers.",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "command-line-args": "^4.0.2",
     "dotenv": "^4.0.0",
-    "ffi": "^2.2.0"
+    "openpgp": "^2.5.5",
+    "request": "^2.81.0"
   }
 }

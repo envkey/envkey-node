@@ -119,21 +119,18 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
       }
     })
   } else {
-    var res = spawnSync("node", spawnArgs, {stdio:[0,1,2]})
+    var res = spawnSync("node", spawnArgs)
 
     if (res.status === 0){
       try {
         var json = JSON.parse(res.stdout)
-        console.log("json: ", json)
         if(!json || typeof json == "string")throwKeyError()
         return pickPermitted(json, opts)
       } catch (e){
-        console.log("error: ", e)
         throwKeyError()
       }
 
     } else {
-      console.log("error status")
       throwKeyError()
     }
   }
