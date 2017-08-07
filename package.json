@@ -4,7 +4,7 @@
   "description": "Envkey secures and simplifies app secrets and config by storing it in an encrypted vault and granting access to developers and servers.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "configuration",
@@ -19,5 +19,8 @@
     "dotenv": "^4.0.0",
     "openpgp": "^2.5.5",
     "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
   }
 }

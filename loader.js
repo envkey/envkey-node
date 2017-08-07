@@ -1,8 +1,9 @@
 var dotenv = require("dotenv"),
     path = require('path'),
+    os = require('os'),
     childProcess = require('child_process'),
-    spawn = childProcess.spawn,
-    spawnSync = childProcess.spawnSync
+    execFile = childProcess.execFile,
+    execFileSync = childProcess.execFileSync
 
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
@@ -102,11 +103,55 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
     return {}
   }
 
-  var filePath = path.join(__dirname, "fetch.js"),
-      spawnArgs = [filePath, "--key", key]
+  var platform = os.platform(),
+      arch = os.arch(),
+      platformPart,
+      archPart
+
+  switch (platform){
+    case 'darwin':
+    case 'freebsd':
+    case 'openbsd':
+    case 'linux':
+      platformPart = platform
+      break
+    case 'win32':
+      platformPart = "windows"
+      break
+    default:
+      platformPart = "linux"
+  }
+
+  switch (arch){
+    case 'arm':
+    case 'arm64':
+      archPart = "arm"
+      break
+    case 'ia32':
+    case 'x32':
+    case 'x86':
+    case 'mips':
+    case 'mipsel':
+    case 'ppc':
+    case 's390':
+      archPart = "386"
+      break
+    case 'x64':
+    case 'ppc64':
+    case 's390x':
+      archPart = "amd64"
+      break
+    default:
+      archPart = "386"
+  }
+
+  var ext = platformPart == "windows" ? ".exe" : "",
+      filePath = path.join(__dirname, "ext", ["envkey-fetch", platformPart, archPart].join("-")) + ext,
+      isDev = ["development", "test"].indexOf(process.env.NODE_ENV) > -1,
+      execArgs = [key, (isDev ? "--cache" : "")]
 
   if (cb){
-    var child = spawn("node", spawnArgs)
+    var child = execFile(filePath, execArgs)
 
     child.on("exit", function(code, signal){
       if (code === 0){
@@ -119,18 +164,13 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
       }
     })
   } else {
-    var res = spawnSync("node", spawnArgs)
-
-    if (res.status === 0){
-      try {
-        var json = JSON.parse(res.stdout)
-        if(!json || typeof json == "string")throwKeyError()
-        return pickPermitted(json, opts)
-      } catch (e){
-        throwKeyError()
-      }
-
-    } else {
+    try {
+      var res = execFileSync(filePath, execArgs).toString()
+      if(!res || !res.trim())throwKeyError()
+      var json = JSON.parse(res.toString())
+      if(!json || typeof json == "string")throwKeyError()
+      return pickPermitted(json, opts)
+    } catch (e){
       throwKeyError()
     }
   }
