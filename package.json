@@ -1,7 +1,7 @@
 {
   "name": "envkey",
   "version": "0.9.0",
-  "description": "Envkey secures and simplifies app secrets and config by storing it in an encrypted vault and granting access to developers and servers.",
+  "description": "EnvKey secures and simplifies app secrets and config by storing it in an encrypted vault and granting access to developers and servers.",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -17,7 +17,6 @@
   "dependencies": {
     "command-line-args": "^4.0.2",
     "dotenv": "^4.0.0",
-    "openpgp": "^2.5.5",
     "request": "^2.81.0"
   },
   "devDependencies": {
