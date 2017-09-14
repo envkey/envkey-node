@@ -5,6 +5,8 @@ var dotenv = require("dotenv"),
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
+const ENVKEY_FETCH_VERSION = "0.9.1"
+
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
     var res = {}
@@ -29,8 +31,6 @@ function applyVarsToEnv(vars){
     }
   }
 
-  console.log("ENVKEY: vars loaded and decrypted - access with process.env.YOUR_VAR_NAME")
-
   return varsSet
 }
 
@@ -49,7 +49,7 @@ function keyError(){
 }
 
 function throwKeyError(){
-  throw "Envkey invalid. Couldn't load vars."
+  throw "ENVKEY invalid. Couldn't load vars."
 }
 
 function load(optsOrCb, maybeCb){
@@ -69,10 +69,8 @@ function load(optsOrCb, maybeCb){
     } else {
       return applyVarsToEnv(fetch(key, opts))
     }
-  } else if (cb){
-    cb(null, {})
   } else {
-    return {}
+    throw "ENVKEY missing - must be set as an environment variable or in a gitignored .env file in the root of your project. Go to https://www.envkey.com if you don't know what an ENVKEY is."
   }
 }
 
@@ -110,10 +108,12 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
 
   switch (platform){
     case 'darwin':
-    case 'freebsd':
-    case 'openbsd':
     case 'linux':
       platformPart = platform
+      break
+    case 'freebsd':
+    case 'openbsd':
+      platformPart = "freebsd"
       break
     case 'win32':
       platformPart = "windows"
@@ -123,10 +123,6 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
   }
 
   switch (arch){
-    case 'arm':
-    case 'arm64':
-      archPart = "arm"
-      break
     case 'ia32':
     case 'x32':
     case 'x86':
@@ -146,7 +142,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
   }
 
   var ext = platformPart == "windows" ? ".exe" : "",
-      filePath = path.join(__dirname, "ext", ["envkey-fetch", platformPart, archPart].join("-")) + ext,
+      filePath = path.join(__dirname, "ext", ["envkey-fetch", ENVKEY_FETCH_VERSION, platformPart, archPart].join("_"), ("envkey-fetch" + ext)),
       isDev = ["development", "test"].indexOf(process.env.NODE_ENV) > -1,
       execArgs = [key, (isDev ? "--cache" : "")]
 
