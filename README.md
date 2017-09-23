@@ -46,14 +46,14 @@ ENVKEY=GsL8zC74DWchdpvssa9z-nk7humd7hJmAqNoA
 In `lib/stripe.js`:
 
 ```javascript
-var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 ```
 
 Now `STRIPE_SECRET_KEY` will stay automatically in sync for all the developers on your team.
 
-On your servers, set the `ENVKEY` as an environment variable instead of putting it in a `.env` file.
+For a server, generate a server `ENVKEY` in the EnvKey App, then set the `ENVKEY` as an environment variable instead of putting it in a `.env` file.
 
-Now your servers will stay in sync as well. If you need to rotate your `STRIPE_SECRET_KEY` you can do it in a few seconds in the EnvKey App, restart your servers, and you're good to go. All your team's developers and all your servers will have the new value.
+Now your servers will stay in sync as well. If you need to rotate your `STRIPE_SECRET_KEY`, you can do it in a few seconds in the EnvKey App, restart your servers, and you're good to go. All your team's developers and all your servers will have the new value.
 
 ### Overriding Vars
 
