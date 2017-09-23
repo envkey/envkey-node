@@ -1,7 +1,8 @@
 {
   "name": "envkey",
-  "version": "0.9.0",
-  "description": "EnvKey secures and simplifies app secrets and config by storing it in an encrypted vault and granting access to developers and servers.",
+  "version": "1.0.0",
+  "description": "EnvKey secures and simplifies application secrets and config.",
+  "repository": "https://github.com/envkey/envkey-js",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -15,9 +16,7 @@
   "author": "Dane Schneider <dane@envkey.com> (https://www.envkey.com)",
   "license": "ISC",
   "dependencies": {
-    "command-line-args": "^4.0.2",
-    "dotenv": "^4.0.0",
-    "request": "^2.81.0"
+    "dotenv": "^4.0.0"
   },
   "devDependencies": {
     "jest": "^20.0.4"
