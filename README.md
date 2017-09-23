@@ -1,4 +1,4 @@
-# envkey
+# envkey npm package
 
 Integrate [EnvKey](https://www.envkey.com) with your Node.js projects to keep api keys, credentials, and other configuration securely and automatically in sync for developers and servers.
 
