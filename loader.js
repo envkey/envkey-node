@@ -2,10 +2,11 @@ var dotenv = require("dotenv"),
     path = require('path'),
     os = require('os'),
     childProcess = require('child_process'),
+    packageVersion = require('./package').version,
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
-const ENVKEY_FETCH_VERSION = "1.0.0"
+const ENVKEY_FETCH_VERSION = "1.1.0"
 
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
@@ -45,7 +46,7 @@ function getKey(opts){
 }
 
 function keyError(){
-  "Envkey invalid. Couldn't load vars."
+  "ENVKEY invalid. Couldn't load vars."
 }
 
 function throwKeyError(){
@@ -144,7 +145,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
   var ext = platformPart == "windows" ? ".exe" : "",
       filePath = path.join(__dirname, "ext", ["envkey-fetch", ENVKEY_FETCH_VERSION, platformPart, archPart].join("_"), ("envkey-fetch" + ext)),
       isDev = ["development", "test"].indexOf(process.env.NODE_ENV) > -1,
-      execArgs = [key, (isDev ? "--cache" : "")]
+      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", packageVersion]
 
   if (cb){
     var child = execFile(filePath, execArgs)
