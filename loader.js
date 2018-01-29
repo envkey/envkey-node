@@ -2,7 +2,6 @@ var dotenv = require("dotenv"),
     path = require('path'),
     os = require('os'),
     childProcess = require('child_process'),
-    packageVersion = require('./package').version,
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
@@ -145,7 +144,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
   var ext = platformPart == "windows" ? ".exe" : "",
       filePath = path.join(__dirname, "ext", ["envkey-fetch", ENVKEY_FETCH_VERSION, platformPart, archPart].join("_"), ("envkey-fetch" + ext)),
       isDev = ["development", "test"].indexOf(process.env.NODE_ENV) > -1,
-      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", packageVersion]
+      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.1.1"]
 
   if (cb){
     var child = execFile(filePath, execArgs)
