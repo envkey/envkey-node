@@ -96,9 +96,29 @@ const envkeyLoader = require('envkey/loader')
 envkeyLoader.load({
   dotEnvFile: ".staging.env", // where to find the dotEnv file that contains your ENVKEY,
   permitted: ["KEY1", "KEY2"] // whitelist of permitted vars (useful for client-side config) - defaults to permitting all if omitted
-}, function(){
+}, function(err, res){
   console.log("Config loaded")
   console.log(process.env.KEY1)
+})
+```
+
+For even more flexibility, you can use the `fetch` method to return your config as simple json and do as you wish with it. As with `load`, it can be called synchronously or asynchronously.
+
+```javascript
+const envkeyLoader = require('envkey/loader')
+
+// synchronous
+const config = envkeyLoader.fetch({ 
+  dotEnvFile: ".staging.env",
+  permitted: ["KEY1", "KEY2"]
+})
+
+// asynchronous
+envkeyLoader.fetch({
+  dotEnvFile: ".staging.env",
+  permitted: ["KEY1", "KEY2"]
+}, function(err, res){
+  console.log(res.KEY1)
 })
 ```
 
