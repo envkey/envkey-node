@@ -112,6 +112,7 @@ const config = envkeyLoader.fetch({
   dotEnvFile: ".staging.env",
   permitted: ["KEY1", "KEY2"]
 })
+console.log(config.KEY1)
 
 // asynchronous
 envkeyLoader.fetch({
