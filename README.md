@@ -65,6 +65,43 @@ The envkey package caches your encrypted config in development so that you can s
 
 For caching purposes, this package assumes you're in development mode if `process.env.NODE_ENV` is "development" or "test". If `process.env.NODE_ENV` is undefined, then it's assumed you're in development mode when a .env file exists in the root of your project.
 
+### Custom Loading
+
+If you want more control over how/when envkey loads your config, you can import/require the loader module directly instead of the top-level package that autoloads.
+
+With require:
+
+```javascript
+const envkeyLoader = require('envkey/loader')
+
+envkeyLoader.load({
+  dotEnvFile: ".staging.env", // where to find the dotEnv file that contains your ENVKEY,
+  permitted: ["KEY1", "KEY2"] // whitelist of permitted vars (useful for client-side config) - defaults to permitting all if omitted
+})
+```
+
+Or with imports:
+
+```javascript
+import {load as envkeyLoad} from 'envkey/loader'
+
+envkeyLoad({ dotEnvFile: ".staging.env" })
+``` 
+
+You can also load your config asynchronously by providing a callback to the load function:
+
+```javascript
+const envkeyLoader = require('envkey/loader')
+
+envkeyLoader.load({
+  dotEnvFile: ".staging.env", // where to find the dotEnv file that contains your ENVKEY,
+  permitted: ["KEY1", "KEY2"] // whitelist of permitted vars (useful for client-side config) - defaults to permitting all if omitted
+}, function(){
+  console.log("Config loaded")
+  console.log(process.env.KEY1)
+})
+```
+
 ## Client-Side Config In The Browser
 
 Since EnvKey is for configuration in addition to secrets, it can be convenient to inject a portion of your EnvKey config into your client-side code. This should be done by whitelisting variables that are safe for the client (i.e. can be made public) and injecting them during your build process. EnvKey has a [webpack plugin](https://github.com/envkey/envkey-webpack-plugin) to help you do it right.
