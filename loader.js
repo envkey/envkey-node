@@ -146,7 +146,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
   if (!process.env.NODE_ENV){
     var dotenvPath = path.resolve(process.cwd(), '.env')
     isDev = fs.existsSync(dotenvPath)
-  } else if (["development", "test"].indexOf(process.env.NODE_ENV) > -1){
+  } else if (["development", "dev", "test"].indexOf(process.env.NODE_ENV) > -1){
     isDev = true
   }
 
