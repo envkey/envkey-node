@@ -6,7 +6,7 @@ var dotenv = require("dotenv"),
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
-const ENVKEY_FETCH_VERSION = "1.1.0"
+var ENVKEY_FETCH_VERSION = "1.1.0"
 
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
@@ -46,17 +46,37 @@ function getKey(opts){
 }
 
 function keyError(){
-  "ENVKEY invalid. Couldn't load vars."
+  return "ENVKEY invalid. Couldn't load vars."
+}
+
+function missingKeyError(){
+  return "ENVKEY missing - must be set as an environment variable or in a gitignored .env file in the root of your project. Go to https://www.envkey.com if you don't know what an ENVKEY is."
+}
+
+function throwMissingKeyError(){
+  var err = missingKeyError()
+  throw err
 }
 
 function throwKeyError(){
-  throw "ENVKEY invalid. Couldn't load vars."
+  var err = keyError()
+  throw err
 }
 
 function load(optsOrCb, maybeCb){
   var opts = typeof optsOrCb == "object" ? optsOrCb : {},
       cb = typeof optsOrCb == "function" ? optsOrCb : maybeCb,
-      key = getKey(opts)
+      key;
+
+  try {
+    key = getKey(opts)
+  } catch (err){
+    if (cb){
+      cb(err)
+    } else {
+      throw(err)
+    }
+  }
 
   if (key){
     if (cb){
@@ -70,8 +90,10 @@ function load(optsOrCb, maybeCb){
     } else {
       return applyVarsToEnv(fetch(key, opts))
     }
+  } else if (cb){
+    cb(missingKeyError())
   } else {
-    throw "ENVKEY missing - must be set as an environment variable or in a gitignored .env file in the root of your project. Go to https://www.envkey.com if you don't know what an ENVKEY is."
+    throw missingKeyError()
   }
 }
 
@@ -86,14 +108,22 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
     opts = {}
   }
 
-  key = typeof keyOrCbOrOpts == "string" ? keyOrCbOrOpts : getKey(opts)
-
   if (typeof keyOrCbOrOpts == "function"){
     cb = keyOrCbOrOpts
   } else if (typeof optsOrCb == "function"){
     cb = optsOrCb
   } else {
     cb = maybeCb
+  }
+
+  try {
+    key = typeof keyOrCbOrOpts == "string" ? keyOrCbOrOpts : getKey(opts)
+  } catch (err){
+    if (cb){
+      cb(err)
+    } else {
+      throw(err)
+    }
   }
 
   if(!key && cb){
@@ -155,18 +185,17 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
       execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.1.1"]
 
   if (cb){
-    var child = execFile(filePath, execArgs)
-
-    child.on("exit", function(code, signal){
-      if (code === 0){
-        child.stdout.setEncoding("utf-8")
-        var json = JSON.parse(child.stdout.read())
-        cb(null, pickPermitted(json, opts))
+    execFile(filePath, execArgs, function(err, stdoutStr, stderrStr){
+      if (err){
+        cb(stderrStr)
+      } else if (stdoutStr.indexOf("error: ") == 0){
+        cb(stdoutStr)
       } else {
-        child.stderr.setEncoding("utf-8")
-        cb(keyError())
+        var json = JSON.parse(stdoutStr)
+        cb(null, pickPermitted(json, opts))
       }
     })
+
   } else {
     try {
       var res = execFileSync(filePath, execArgs).toString()
