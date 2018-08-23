@@ -2,8 +2,7 @@
 const VALID_ENVKEY = "Emzt4BE7C23QtsC7gb1z-3NvfNiG1Boy6XH2o-env-staging.envkey.com",
       INVALID_ENVKEY = "Emzt4BE7C23QtsC7gb1z-3NvfNiG1Boy6XH2oinvalid-env-staging.envkey.com",
       INVALID_ENVKEY2 = "Emzt4BE7C23QtsC7gb1zinvalid-3NvfNiG1Boy6XH2o-env-staging.envkey.com",
-      INVALID_ENVKEY3 = "Emzt4BE7C23QtsC7gb1zinvalid-3NvfNiG1Boy6XH2o-localhost:387946",
-      INVALID_ENVKEY4 = "invalid"
+      INVALID_ENVKEY3 = "invalid"
 
 function clearEnv(){
   delete process.env.ENVKEY
@@ -56,13 +55,6 @@ test('it should raise an error with an invalid envkey - synchronously', ()=> {
   clearEnv()
 
   process.env.ENVKEY = INVALID_ENVKEY3
-  expect(()=> {
-    var loader = require("../loader.js")
-    loader.load()
-  }).toThrow(/ENVKEY invalid/)
-  clearEnv()
-
-  process.env.ENVKEY = INVALID_ENVKEY4
   expect(()=> {
     var loader = require("../loader.js")
     loader.load()

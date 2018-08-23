@@ -6,7 +6,7 @@ var dotenv = require("dotenv"),
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
-var ENVKEY_FETCH_VERSION = "1.1.0"
+var ENVKEY_FETCH_VERSION = "1.1.9"
 
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
@@ -182,7 +182,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
 
   var ext = platformPart == "windows" ? ".exe" : "",
       filePath = path.join(__dirname, "ext", ["envkey-fetch", ENVKEY_FETCH_VERSION, platformPart, archPart].join("_"), ("envkey-fetch" + ext)),
-      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.1.1"]
+      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.1.4"]
 
   if (cb){
     execFile(filePath, execArgs, function(err, stdoutStr, stderrStr){
@@ -199,12 +199,21 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
   } else {
     try {
       var res = execFileSync(filePath, execArgs).toString()
-      if(!res || !res.trim())throwKeyError()
+
+      if(!res || !res.trim()){
+        throwKeyError()
+      }
+
       var json = JSON.parse(res.toString())
-      if(!json || typeof json == "string")throwKeyError()
+
+      if(!json){
+        throwKeyError()
+      }
+
       return pickPermitted(json, opts)
     } catch (e){
-      throwKeyError()
+      console.error(e.stderr.toString())
+      throw(e.stderr.toString())
     }
   }
 }
