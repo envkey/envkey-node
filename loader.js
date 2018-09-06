@@ -25,8 +25,10 @@ function pickPermitted(vars, opts){
 function applyVarsToEnv(vars){
   var varsSet = {}
   for (k in vars){
-    if(!process.env[k]){
-      var val = vars[k]
+    var val = process.env[k] || vars[k]
+    if(process.env[k]){
+      varsSet[k] = val
+    } else {
       process.env[k] = val
       varsSet[k] = val
     }
