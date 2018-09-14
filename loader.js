@@ -6,7 +6,7 @@ var dotenv = require("dotenv"),
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
-var ENVKEY_FETCH_VERSION = "1.1.9"
+var ENVKEY_FETCH_VERSION = "1.2.0"
 
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
