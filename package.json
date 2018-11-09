@@ -1,6 +1,6 @@
 {
   "name": "envkey",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "description": "EnvKey secures and simplifies application secrets and config.",
   "repository": "https://github.com/envkey/envkey-js",
   "main": "index.js",
