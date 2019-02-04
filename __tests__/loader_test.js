@@ -126,6 +126,16 @@ test('it should not overwrite an existing process.env var', () => {
   clearEnv()
 })
 
+test('it should not overwrite an existing process.env var even when falsy', () => {
+  process.env.ENVKEY = VALID_ENVKEY
+  process.env.TEST = ""
+  var loader = require("../loader.js")
+  loader.load()
+  expect(process.env.TEST).toBe("")
+  expect(process.env.TEST_2).toBe("works!")
+  clearEnv()
+})
+
 test('it uses whitelist with "permitted" option', () => {
   process.env.ENVKEY = VALID_ENVKEY
   var loader = require("../loader.js")
