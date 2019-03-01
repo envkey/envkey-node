@@ -6,7 +6,7 @@ var dotenv = require("dotenv"),
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
-var ENVKEY_FETCH_VERSION = "1.2.4"
+var ENVKEY_FETCH_VERSION = "1.2.5"
 
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
@@ -182,7 +182,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
 
   var ext = platformPart == "windows" ? ".exe" : "",
       filePath = path.join(__dirname, "ext", ["envkey-fetch", ENVKEY_FETCH_VERSION, platformPart, archPart].join("_"), ("envkey-fetch" + ext)),
-      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.1.4"]
+      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.2.6"]
 
   if (cb){
     execFile(filePath, execArgs, function(err, stdoutStr, stderrStr){
