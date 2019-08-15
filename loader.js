@@ -182,7 +182,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
 
   var ext = platformPart == "windows" ? ".exe" : "",
       filePath = path.join(__dirname, "ext", ["envkey-fetch", ENVKEY_FETCH_VERSION, platformPart, archPart].join("_"), ("envkey-fetch" + ext)),
-      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.2.6"]
+      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.2.7"]
 
   if (cb){
     execFile(filePath, execArgs, function(err, stdoutStr, stderrStr){
@@ -212,8 +212,13 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
 
       return pickPermitted(json, opts)
     } catch (e){
-      console.error(e.stderr.toString())
-      throw(e.stderr.toString())
+      if (e.stderr){
+        console.error(e.stderr.toString())
+        throw(e.stderr.toString())
+      } else {
+        console.error(e.stack)
+        throw(e)
+      }
     }
   }
 }
