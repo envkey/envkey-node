@@ -37,7 +37,13 @@ function applyVarsToEnv(vars){
 
 function getKey(opts){
   if (opts.dotEnvFile){
-    dotenv.load({path: "./" + opts.dotEnvFile})
+    var path = opts.dotEnvFile;
+
+    if(path.charAt(0) !== "/") {
+      path = "./" + opts.dotEnvFile;
+    }
+
+    dotenv.load({path: path})
   } else {
     dotenv.config()
   }
