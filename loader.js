@@ -178,6 +178,12 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
       archPart = "386"
   }
 
+  // workaround for mac M1 chip until Go compiler supports it natively
+  // amd64 seems to work for now
+  if (platform == "darwin" && arch == "arm64"){
+    archPart = "amd64"
+  }
+
   var isDev = false
   if (!process.env.NODE_ENV){
     var dotenvPath = path.resolve(process.cwd(), '.env')
