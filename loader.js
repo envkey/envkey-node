@@ -172,6 +172,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
     case 'x64':
     case 'ppc64':
     case 's390x':
+    case 'arm64':
       archPart = "amd64"
       break
     default:
