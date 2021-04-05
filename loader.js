@@ -6,7 +6,7 @@ var dotenv = require("dotenv"),
     execFile = childProcess.execFile,
     execFileSync = childProcess.execFileSync
 
-var ENVKEY_FETCH_VERSION = "1.2.5"
+var ENVKEY_FETCH_VERSION = "1.2.9"
 
 function pickPermitted(vars, opts){
   if (opts && opts.permitted && opts.permitted.length){
@@ -174,15 +174,17 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
     case 's390x':
       archPart = "amd64"
       break
+    case 'arm64':
+      archPart = "arm64"
+      break
     default:
-      archPart = "386"
+      archPart = "amd64"
   }
 
-  // workaround for mac M1 chip until Go compiler supports it natively
-  // amd64 seems to work for now
-  if (platform == "darwin" && arch == "arm64"){
-    archPart = "amd64"
+  if (archPart == "386"){
+    throw new Error("As of 1.3.0, envkey-node only supports 64-bit systems. Please use an earlier version for 32-bit support.")
   }
+
 
   var isDev = false
   if (!process.env.NODE_ENV){
@@ -194,7 +196,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
 
   var ext = platformPart == "windows" ? ".exe" : "",
       filePath = path.join(__dirname, "ext", ["envkey-fetch", ENVKEY_FETCH_VERSION, platformPart, archPart].join("_"), ("envkey-fetch" + ext)),
-      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.2.7"]
+      execArgs = [key, (isDev ? "--cache" : ""), "--client-name", "envkey-node", "--client-version", "1.3.0"]
 
   if (cb){
     execFile(filePath, execArgs, function(err, stdoutStr, stderrStr){
