@@ -175,6 +175,7 @@ function fetch(keyOrCbOrOpts, optsOrCb, maybeCb){
       archPart = "amd64"
       break
     case 'arm64':
+    case 'aarch64':
       archPart = "arm64"
       break
     default:
